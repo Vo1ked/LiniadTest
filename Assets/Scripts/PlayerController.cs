@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour , IHoled
 {
     Rigidbody _rigidbody;
     // Start is called before the first frame update
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     private void Move(SwipeManager.Swipe swipe)
     {
         Vector3 direction = Vector2.zero;
-        float power = 10;
+        float power = 20;
         switch (swipe)
         {
             case SwipeManager.Swipe.None:
@@ -54,5 +54,17 @@ public class PlayerController : MonoBehaviour
             _rigidbody.angularVelocity = Vector3.zero;
             collision.gameObject.tag = "Untagged";
         }
+    }
+
+    public void Holed()
+    {
+        StartCoroutine(Wait(1f, GameController.Instance.PlayerHoled));
+    }
+
+    IEnumerator Wait(float seconds , System.Action OnComplite)
+    {
+        YieldInstruction wait = new WaitForSeconds(seconds);
+        yield return wait;
+        OnComplite?.Invoke();
     }
 }

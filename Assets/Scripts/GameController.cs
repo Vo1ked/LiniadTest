@@ -8,7 +8,8 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance { get; private set; }
     private static int _currentLevel;
-    public SwipeManager swipeManager;
+    public SwipeManager swipeManager { get; private set; }
+    [SerializeField]private TriggerEvent _fallCheck;
     Text _currentLevelText;
     bool pause = false;
     void Awake()
@@ -31,9 +32,23 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void PlayerHoled()
+    {
+        if(_holes > 0)
+        {
+            Retry();
+        }
+        RemoveHole();
+    }
+
     public void Retry()
     {
         SceneManager.LoadScene(_currentLevel);
+    }
+
+    private void Retry(Collider coll)
+    {
+        Retry();
     }
 
     public void Pause()
@@ -44,20 +59,16 @@ public class GameController : MonoBehaviour
 
     void LevelComplite()
     {
-        _currentLevel = (_currentLevel) % SceneManager.sceneCount;
+        _currentLevel = (_currentLevel + 1) % SceneManager.sceneCount;
         SceneManager.LoadScene(_currentLevel);
     }
     // Start is called before the first frame update
     void Start()
     {
         _currentLevelText = GameObject.FindGameObjectWithTag("LevelText").GetComponent<Text>();
-        _currentLevelText.text = "Level " + _currentLevel + 1;
+        _currentLevelText.text = "Level " + (_currentLevel + 1);
+        _fallCheck.Triggered += Retry;
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

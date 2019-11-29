@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class TriggerEvent : MonoBehaviour
 {
-    public System.Action Triggered;
+    public System.Action<Collider> Triggered;
 
     private void OnTriggerEnter(Collider other)
     {
-        Triggered?.Invoke();
+        Triggered?.Invoke(other);
     }
 }
